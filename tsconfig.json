@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    // "module": ESNext — browsers modernos entendem ES Modules nativamente
+    // Diferente do backend que usa commonjs!
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",  // modo moderno para projetos com bundler
+    "jsx": "react-jsx",             // transforma JSX sem precisar importar React
+    "strict": true,
+    "noUnusedLocals": true,         // erro se variável declarada mas não usada
+    "noUnusedParameters": true,     // erro se parâmetro declarado mas não usado
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,  // Vite faz o build, não o tsc
+    // Alias de caminho (correspondente ao vite.config.ts)
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

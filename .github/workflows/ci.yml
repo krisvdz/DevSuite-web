@@ -1,0 +1,167 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# CI PIPELINE — Continuous Integration para o Frontend
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# 📚 CONCEITO: Deploy do Frontend vs Backend
+#
+# Frontend (arquivos estáticos):
+# - Build gera apenas HTML, JS, CSS
+# - Deploy = copiar arquivos para CDN (Vercel, Netlify, S3+CloudFront)
+# - Vercel detecta o framework e faz deploy automático ao push
+#
+# Backend (processo Node.js):
+# - Precisa de servidor para rodar
+# - Railway, Render, Fly.io: plataformas PaaS (simples como Vercel)
+# - AWS, GCP, Azure: mais controle, mais complexidade
+# - Docker: portabilidade total
+
+name: CI — Web
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'taskflow-web/**'
+      - '.github/workflows/ci-web.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'taskflow-web/**'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # ─── Job: quality-check ──────────────────────────────────────────────────
+  quality-check:
+    name: Lint + Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: taskflow-web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./taskflow-web
+        run: npm ci
+
+      - name: TypeScript type check
+        working-directory: ./taskflow-web
+        run: npm run type-check
+
+  # ─── Job: build ───────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: quality-check
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: taskflow-web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./taskflow-web
+        run: npm ci
+
+      - name: Build
+        working-directory: ./taskflow-web
+        run: npm run build
+        env:
+          # 📚 CONCEITO: GitHub Secrets
+          # Valores sensíveis ficam em Settings > Secrets and variables > Actions
+          # Acessados como ${{ secrets.NOME_DO_SECRET }}
+          # Nunca aparecem nos logs (mascarados automaticamente)
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: taskflow-web/dist/
+          retention-days: 7
+
+  # ─── Job: deploy ──────────────────────────────────────────────────────────
+  # Deploy no Vercel via CLI (alternativa ao deploy automático do Vercel)
+  # Útil para ter mais controle sobre o processo
+  deploy-preview:
+    name: Deploy Preview (Vercel)
+    runs-on: ubuntu-latest
+    needs: build
+    # Apenas em Pull Requests (para criar preview deployments)
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      # Download do artifact de build
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: taskflow-web/dist
+
+      - name: Deploy to Vercel (Preview)
+        working-directory: ./taskflow-web
+        run: |
+          # --prebuilt: usa o dist já gerado em vez de rebuildar
+          vercel deploy --prebuilt \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope=${{ secrets.VERCEL_ORG_ID }} \
+            --yes
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  deploy-production:
+    name: Deploy Production (Vercel)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: taskflow-web/dist
+
+      - name: Deploy to Vercel (Production)
+        working-directory: ./taskflow-web
+        run: |
+          vercel deploy --prebuilt --prod \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --scope=${{ secrets.VERCEL_ORG_ID }} \
+            --yes
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

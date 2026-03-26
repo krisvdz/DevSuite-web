@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      📚 CONCEITO: viewport meta tag
+      Essencial para responsividade em mobile.
+      Sem isso, o browser mobile renderiza a página em ~980px e dá zoom out.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph — como o site aparece ao compartilhar no WhatsApp/Twitter -->
+    <meta property="og:title" content="TaskFlow" />
+    <meta property="og:description" content="Gerencie seus projetos e tarefas com eficiência" />
+
+    <title>TaskFlow — Gerenciador de Projetos</title>
+  </head>
+  <body>
+    <!--
+      📚 CONCEITO: SPA (Single Page Application)
+
+      Toda a aplicação React é "injetada" dentro desta div#root.
+      O HTML inicial é mínimo — o JavaScript gera todo o conteúdo.
+
+      Vantagem: navegação super rápida (sem reload de página completa)
+      Desvantagem: SEO ruim (bots de busca veem HTML vazio inicialmente)
+
+      Para resolver o problema de SEO existem:
+      - SSR (Server-Side Rendering): Next.js, Remix
+      - SSG (Static Site Generation): Astro, Next.js
+    -->
+    <div id="root"></div>
+
+    <!--
+      type="module" = ES Modules nativos do browser
+      Vite serve os arquivos diretamente sem bundle em desenvolvimento!
+    -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

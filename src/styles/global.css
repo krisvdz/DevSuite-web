@@ -1,0 +1,39 @@
+/* Diretivas do Tailwind — geradas pelo PostCSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos base globais */
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply antialiased text-gray-900 bg-gray-50;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Scrollbar customizada (opcional) */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+}
+
+/* Componentes reutilizáveis com @layer components */
+@layer components {
+  /* Classe utilitária para truncar texto em múltiplas linhas */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
