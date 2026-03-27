@@ -23,10 +23,12 @@ import axios, { AxiosError } from 'axios'
 import { ApiError } from '../types'
 
 // Cria uma instância do Axios com configurações padrão
+const apiUrl = (import.meta as any).env?.VITE_API_URL || '/api'
+
 export const api = axios.create({
   // Em dev com Vite proxy: /api → http://localhost:4000/api
   // Em produção: https://sua-api.railway.app
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: apiUrl,
   timeout: 10000, // 10 segundos — evita requests pendurados
   headers: {
     'Content-Type': 'application/json',

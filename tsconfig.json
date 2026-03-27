@@ -16,6 +16,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,  // Vite faz o build, não o tsc
+    "skipLibCheck": true, // ignora erros de tipo em node_modules (solid-js, vite internals, etc)
     // Alias de caminho (correspondente ao vite.config.ts)
     "paths": {
       "@/*": ["./src/*"]
