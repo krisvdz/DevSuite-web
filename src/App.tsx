@@ -10,6 +10,7 @@ import { ProjectPage } from './pages/ProjectPage'
 import { LandingPage } from './pages/LandingPage'
 import { DevPulsePage } from './pages/DevPulsePage'
 import { FocusTimerPage } from './pages/FocusTimerPage'
+import { MarketPulsePage } from './pages/MarketPulsePage'
 import { AppLayout } from './components/layout/AppLayout'
 
 const queryClient = new QueryClient({
@@ -54,6 +55,7 @@ function AppRoutes() {
         <Route path="tasks/:id" element={<ProjectPage />} />
         <Route path="devpulse" element={<DevPulsePage />} />
         <Route path="focus" element={<FocusTimerPage />} />
+        <Route path="market-pulse" element={<MarketPulsePage />} />
       </Route>
 
       {/* Legacy redirect */}

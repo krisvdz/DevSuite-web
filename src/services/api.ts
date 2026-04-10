@@ -112,6 +112,22 @@ export const projectsApi = {
     api.delete(`/projects/${id}`),
 }
 
+// ─── Market Pulse API ────────────────────────────────────────────────────────
+export const marketApi = {
+  getPortfolio: () => api.get('/market/portfolio'),
+
+  savePortfolio: (allocations: Array<{ etfSymbol: string; percentage: number }>) =>
+    api.put('/market/portfolio', { allocations }),
+
+  getPrices: () => api.get('/market/prices'),
+
+  getNews: () => api.get('/market/news'),
+
+  getAnalysis: () => api.get('/market/analysis'),
+
+  generateAnalysis: () => api.post('/market/analysis/generate', {}),
+}
+
 // ─── Tasks API ────────────────────────────────────────────────────────────────
 export const tasksApi = {
   create: (

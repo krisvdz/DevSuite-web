@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import {
-  LayoutDashboard, Github, Timer, LogOut, Zap, ChevronRight
+  LayoutDashboard, Github, Timer, LogOut, Zap, ChevronRight, TrendingUp
 } from 'lucide-react'
 
 const navItems = [
@@ -28,6 +28,14 @@ const navItems = [
     description: 'Sessões pomodoro',
     color: 'text-emerald-400',
     activeBg: 'bg-emerald-500/10 border-emerald-500/30',
+  },
+  {
+    to: '/app/market-pulse',
+    icon: TrendingUp,
+    label: 'Market Pulse',
+    description: 'Análise de ETFs com IA',
+    color: 'text-amber-400',
+    activeBg: 'bg-amber-500/10 border-amber-500/30',
   },
 ]
 
