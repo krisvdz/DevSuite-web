@@ -6,9 +6,10 @@ interface EtfPriceCardProps {
   price: number
   changePercent: number
   isUserHolding: boolean
+  isStale?: boolean
 }
 
-export function EtfPriceCard({ symbol, name, price, changePercent, isUserHolding }: EtfPriceCardProps) {
+export function EtfPriceCard({ symbol, name, price, changePercent, isUserHolding, isStale }: EtfPriceCardProps) {
   const isPositive = changePercent > 0
   const isNeutral = Math.abs(changePercent) < 0.01
   const sign = isPositive ? '+' : ''
@@ -35,10 +36,15 @@ export function EtfPriceCard({ symbol, name, price, changePercent, isUserHolding
       </div>
 
       <div className="flex items-end justify-between">
-        <span className="text-white font-semibold text-lg tabular-nums">
-          ${price > 0 ? price.toFixed(2) : '—'}
-        </span>
-        <span className={`text-sm font-medium tabular-nums ${trendColor}`}>
+        <div>
+          <span className={`font-semibold text-lg tabular-nums ${isStale ? 'text-gray-300' : 'text-white'}`}>
+            ${price > 0 ? price.toFixed(2) : '—'}
+          </span>
+          {isStale && price > 0 && (
+            <span className="text-gray-600 text-xs ml-1">fech.</span>
+          )}
+        </div>
+        <span className={`text-sm font-medium tabular-nums ${isStale ? 'text-gray-500' : trendColor}`}>
           {price > 0 ? `${sign}${changePercent.toFixed(2)}%` : '—'}
         </span>
       </div>

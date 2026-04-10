@@ -102,28 +102,29 @@ export function AnalysisSection({ hasPortfolio }: AnalysisSectionProps) {
         )}
       </div>
 
-      {/* Generate button */}
-      <button
-        onClick={() => generateMutation.mutate()}
-        disabled={!hasPortfolio || generateMutation.isPending}
-        className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 disabled:from-amber-500/30 disabled:to-orange-500/30 disabled:cursor-not-allowed text-black disabled:text-black/30 font-semibold text-sm rounded-xl py-3 transition-all mb-5 shadow-lg shadow-amber-500/20 disabled:shadow-none"
-      >
-        <Sparkles className="h-4 w-4" />
-        {generateMutation.isPending ? 'Consultando Claude...' : 'Gerar Análise com IA'}
-      </button>
-
-      {!hasPortfolio && (
+      {!hasPortfolio ? (
         <div className="flex items-start gap-3 bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-5 text-sm text-amber-300">
           <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <p>Configure sua carteira antes de gerar uma análise.</p>
+          <p>Configure sua carteira na aba "Minha Carteira" antes de gerar uma análise.</p>
         </div>
+      ) : (
+        <button
+          onClick={() => generateMutation.mutate()}
+          disabled={generateMutation.isPending}
+          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 disabled:from-amber-500/30 disabled:to-orange-500/30 disabled:cursor-not-allowed text-black disabled:text-black/30 font-semibold text-sm rounded-xl py-3 transition-all mb-5 shadow-lg shadow-amber-500/20 disabled:shadow-none"
+        >
+          <Sparkles className="h-4 w-4" />
+          {generateMutation.isPending ? 'Consultando Claude...' : 'Gerar Análise com IA'}
+        </button>
       )}
 
       {generateMutation.isPending && (
         <div className="bg-white/3 border border-white/8 rounded-2xl p-8 text-center">
           <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p className="text-gray-400 text-sm">Analisando notícias, preços e sua carteira...</p>
-          <p className="text-gray-600 text-xs mt-1">Isso pode levar alguns segundos</p>
+          <p className="text-gray-600 text-xs mt-1">
+            A análise funciona mesmo com o mercado fechado — Claude usa as notícias e os últimos preços disponíveis.
+          </p>
         </div>
       )}
 
